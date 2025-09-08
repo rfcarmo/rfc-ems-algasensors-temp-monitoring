@@ -40,7 +40,7 @@ public class SensorMonitoringController {
 
     }
 
-    @DeleteMapping("/disable")
+    @DeleteMapping("/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void disable(@PathVariable TSID sensorId) {
         SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
