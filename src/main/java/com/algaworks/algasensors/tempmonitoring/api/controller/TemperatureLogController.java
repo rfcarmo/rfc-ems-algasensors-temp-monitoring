@@ -1,6 +1,6 @@
 package com.algaworks.algasensors.tempmonitoring.api.controller;
 
-import com.algaworks.algasensors.tempmonitoring.api.model.TemperatureLogOutput;
+import com.algaworks.algasensors.tempmonitoring.api.model.TemperatureLogData;
 import com.algaworks.algasensors.tempmonitoring.domain.model.SensorId;
 import com.algaworks.algasensors.tempmonitoring.domain.model.TemperatureLog;
 import com.algaworks.algasensors.tempmonitoring.domain.repository.TemperatureLogRepository;
@@ -22,11 +22,11 @@ public class TemperatureLogController {
     private final TemperatureLogRepository temperatureLogRepository;
 
     @GetMapping
-    public Page<TemperatureLogOutput> search(@PathVariable TSID sensorId, @PageableDefault Pageable pageable) {
+    public Page<TemperatureLogData> search(@PathVariable TSID sensorId, @PageableDefault Pageable pageable) {
         Page<TemperatureLog> temperatureLogs = temperatureLogRepository.findAllBySensorId(new SensorId(sensorId), pageable);
 
         return temperatureLogs.map(temperatureLog ->
-                TemperatureLogOutput.builder()
+                TemperatureLogData.builder()
                         .id(temperatureLog.getId().getValue())
                         .sensorId(temperatureLog.getSensorId().getValue())
                         .registeredAt(temperatureLog.getRegisteredAt())
