@@ -21,7 +21,7 @@ public class RabbitMQListener {
 
     private final TemperatureMonitoringService temperatureMonitoringService;
 
-    @RabbitListener(queues = QUEUE)
+    @RabbitListener(queues = QUEUE, concurrency = "2-3")
     public void handle(@Payload TemperatureLogData temperatureLogData, @Headers Map<String, Object> headers) {
         TSID sensorId = temperatureLogData.getSensorId();
         Double temperature = temperatureLogData.getValue();
