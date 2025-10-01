@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE = "temperature-monitoring.process-temperature.v1.q";
+    public static final String QUEUE_PROCESS_TEMPERATURE = "temperature-monitoring.process-temperature.v1.q";
+    public static final String QUEUE_ALERTING = "temperature-monitoring.alerting.v1.q";
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper objectMapper) {
@@ -24,13 +25,23 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue queue() {
-        return QueueBuilder.durable(QUEUE).build();
+    public Queue queueProcessTemperature() {
+        return QueueBuilder.durable(QUEUE_PROCESS_TEMPERATURE).build();
     }
 
     @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(queue()).to(exchange());
+    public Queue queueAlerting() {
+        return QueueBuilder.durable(QUEUE_ALERTING).build();
+    }
+
+    @Bean
+    public Binding bindingProcessTemperature() {
+        return BindingBuilder.bind(queueProcessTemperature()).to(exchange());
+    }
+
+    @Bean
+    public Binding bindingAlerting() {
+        return BindingBuilder.bind(queueAlerting()).to(exchange());
     }
 
     public FanoutExchange exchange() {

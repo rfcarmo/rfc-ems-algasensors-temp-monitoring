@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static com.algaworks.algasensors.tempmonitoring.infrastructure.rabbitmq.RabbitMQConfig.QUEUE;
+import static com.algaworks.algasensors.tempmonitoring.infrastructure.rabbitmq.RabbitMQConfig.QUEUE_ALERTING;
+import static com.algaworks.algasensors.tempmonitoring.infrastructure.rabbitmq.RabbitMQConfig.QUEUE_PROCESS_TEMPERATURE;
 
 @Slf4j
 @Component
@@ -21,15 +22,20 @@ public class RabbitMQListener {
 
     private final TemperatureMonitoringService temperatureMonitoringService;
 
-    @RabbitListener(queues = QUEUE, concurrency = "2-3")
-    public void handle(@Payload TemperatureLogData temperatureLogData, @Headers Map<String, Object> headers) {
+    @RabbitListener(queues = QUEUE_PROCESS_TEMPERATURE, concurrency = "2-3")
+    public void handleProcessTemperature(@Payload TemperatureLogData temperatureLogData, @Headers Map<String, Object> headers) {
         TSID sensorId = temperatureLogData.getSensorId();
         Double temperature = temperatureLogData.getValue();
 
         log.info("Temperature log received: sensorId={}, temperature={}", sensorId, temperature);
-        log.info("Headers: {}", headers.toString());
+        // log.info("Headers: {}", headers.toString());
 
         temperatureMonitoringService.processTemperatureData(temperatureLogData);
+    }
+
+    @RabbitListener(queues = QUEUE_ALERTING, concurrency = "2-3")
+    public void handleAlerting(@Payload TemperatureLogData temperatureLogData, @Headers Map<String, Object> headers) {
+        log.info("Alert received: sensorId={}, temperature={}", temperatureLogData.getSensorId(), temperatureLogData.getValue());
     }
 
 }
