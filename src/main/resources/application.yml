@@ -26,3 +26,9 @@ spring:
     listener:
       simple:
         prefetch: 4
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 10s
+          multiplier: 2
+          max-interval: 30s
